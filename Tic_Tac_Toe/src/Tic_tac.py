@@ -1,27 +1,38 @@
+import math
+import sys
+
+# Please install numpy and pygame to run this application
 import numpy as np
 import pygame
-import sys
-import math
+
 ROWS = 3
 COLS = 3
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+
+# The program below utilizes numpy to generate a board and pygame to aid in the generation of a GUI The program also
+# prints the current state of the board to the console along with some extra messages. In terms of optimizations that
+# can be made, There is a lot of repeat code, an example modification is, introducing a new function that clears the
+# board.
 def create_board():
     return np.zeros((ROWS, COLS))
+
 
 def draw_board(board):
     for c in range(COLS):
         for r in range(ROWS):
-            pygame.draw.rect(screen, WHITE,(c*SIZE, r*SIZE, SPOT_SIZE, SPOT_SIZE))
+            pygame.draw.rect(screen, WHITE, (c * SIZE, r * SIZE, SPOT_SIZE, SPOT_SIZE))
     for c in range(COLS):
         for r in range(ROWS):
             if board[r][c] == 1:
-                pygame.draw.circle(screen, BLACK, (int(c*SIZE + SIZE/2 - X_OFFSET), int(r*SIZE + SIZE/2 - Y_OFFSET)), 70)
-                pygame.draw.circle(screen, WHITE,(int(c * SIZE + SIZE / 2 - X_OFFSET), int(r * SIZE + SIZE / 2 - Y_OFFSET)), 50)
+                pygame.draw.circle(screen, BLACK,
+                                   (int(c * SIZE + SIZE / 2 - X_OFFSET), int(r * SIZE + SIZE / 2 - Y_OFFSET)), 70)
+                pygame.draw.circle(screen, WHITE,
+                                   (int(c * SIZE + SIZE / 2 - X_OFFSET), int(r * SIZE + SIZE / 2 - Y_OFFSET)), 50)
             elif board[r][c] == 2:
-                x =shape.render('X', 1, BLACK)
-                screen.blit(x, (int(c*SIZE + SIZE/5), int(r*SIZE - Y_OFFSET_2)))
+                x = shape.render('X', 1, BLACK)
+                screen.blit(x, (int(c * SIZE + SIZE / 5), int(r * SIZE - Y_OFFSET_2)))
     pygame.display.update()
 
 
@@ -31,28 +42,30 @@ def valid_spot(board, row_num, col_num):
     else:
         return False
 
+
 def place_piece(board, row_num, col_num, piece):
     board[row_num][col_num] = piece
 
+
 def check_win(board, piece):
-    #Horizontal wins
+    # Horizontal wins
     for c in range(COLS - 1):
         for r in range(ROWS):
-            if board[r][c] == piece and board[r][c+1] == piece and board[r][c-1] == piece:
+            if board[r][c] == piece and board[r][c + 1] == piece and board[r][c - 1] == piece:
                 return True
-    #Vertical wins
+    # Vertical wins
     for c in range(COLS):
         for r in range(ROWS - 1):
-            if board[r][c] == piece and board[r+1][c] == piece and board[r-1][c] == piece:
+            if board[r][c] == piece and board[r + 1][c] == piece and board[r - 1][c] == piece:
                 return True
 
-    #sloped wins (negative)
+    # sloped wins (negative)
     for c in range(COLS - 2):
         for r in range(ROWS - 2):
             if board[r][c] == piece and board[r - 1][c - 1] == piece and board[r - 2][c - 2] == piece:
                 return True
 
-    #sloped wins (positive)
+    # sloped wins (positive)
     for c in range(COLS - 2):
         for r in range(ROWS - 2):
             if board[r + 2][c] == piece and board[r + 1][c + 1] == piece and board[r][c + 2] == piece:
@@ -69,7 +82,7 @@ SIZE = 200
 BOARD_SIZE = 190
 SPOT_SIZE = 170
 MESSAGE_BOX = 100
-X_OFFSET =  15
+X_OFFSET = 15
 Y_OFFSET = 15
 Y_OFFSET_2 = 20
 
@@ -78,17 +91,19 @@ height = COLS * BOARD_SIZE + MESSAGE_BOX
 
 size = (width, height)
 
-shape = pygame.font.SysFont('Arial', 180, bold= True)
-message = pygame.font.SysFont('Arial', 25, bold = True)
+shape = pygame.font.SysFont('Arial', 180, bold=True)
+message = pygame.font.SysFont('Arial', 25, bold=True)
 screen = pygame.display.set_mode(size)
 draw_board(board)
 pygame.display.update()
+
 
 def play_again():
     new_board = create_board()
     pygame.draw.rect(screen, BLACK, (0, 500, SPOT_SIZE * 10, SPOT_SIZE))
     draw_board(new_board)
-    game_play(new_board,True )
+    game_play(new_board, True)
+
 
 def game_play(board, in_play):
     turn = 0
@@ -111,14 +126,14 @@ def game_play(board, in_play):
                     draw_board(board)
                     play_again()
 
-            if event.type ==pygame.MOUSEMOTION:
-                posx,posy = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEMOTION:
+                posx, posy = pygame.mouse.get_pos()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if turn%2 == 0:
+                if turn % 2 == 0:
                     posx, posy = pygame.mouse.get_pos()
-                    row = int(math.floor(posy/BOARD_SIZE))
-                    column = int(math.floor(posx/BOARD_SIZE))
-                    if valid_spot(board,row,column):
+                    row = int(math.floor(posy / BOARD_SIZE))
+                    column = int(math.floor(posx / BOARD_SIZE))
+                    if valid_spot(board, row, column):
                         place_piece(board, row, column, 1)
                         draw_board(board)
                         turn += 1
@@ -127,7 +142,7 @@ def game_play(board, in_play):
                     if check_win(board, 1):
                         print('Player 1 WINS! Press spacebar to play again')
                         text = message.render('PLAYER 1 WINS!! game will restart automatically', 1, WHITE)
-                        screen.blit(text, (50,600))
+                        screen.blit(text, (50, 600))
                         pygame.display.update()
                         in_play = False
                         print(board)
@@ -163,4 +178,5 @@ def game_play(board, in_play):
 
                 print(board)
 
-game_play(board,in_play)
+
+game_play(board, in_play)
