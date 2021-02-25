@@ -5,10 +5,14 @@ Simple program made purely with functions, no OOP here sadly :(
 Used this project to dip my toes into Pygame and was quite happy with the result!
 
 To run the program please make sure to install
-numpy
-and
+
+numpy,
+
 pygame
 
 ex.
-pip install ...
+
+pip install numpy
+
+  pip install pygame
 
